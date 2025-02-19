@@ -13,15 +13,16 @@ class Client:
         return f"Клієнт: {self.name} (ID: {self.id_number})"
     
 class ExtendedClient(Client):
-    def __init__(self, name, id_number, customer_id, customer_dob, cust_gender, cust_location):
-        super().__init__(name, id_number)
+    def __init__(self, name, transaction_id, customer_id, customer_dob, cust_gender, cust_location):
+        super().__init__(name, transaction_id)
+        self.transaction_id = transaction_id
         self.customer_id = customer_id
         self.customer_dob = customer_dob
         self.cust_gender = cust_gender
         self.cust_location = cust_location
 
     def __str__(self):
-        return (f"Клієнт: {self.name} (ID: {self.id_number}, CustomerID: {self.customer_id}, "
+        return (f"Клієнт: {self.name} (ID: {self.transaction_id}, CustomerID: {self.customer_id}, "
                 f"Дата народження: {self.customer_dob}, Стать: {self.cust_gender}, Локація: {self.cust_location})")
 
 class Account(ABC):
@@ -84,8 +85,8 @@ class Bank:
         self.next_account_number += 1
         return account
 
-    def create_extended_client(self, name, id_number, customer_id, customer_dob, cust_gender, cust_location):
-        client = ExtendedClient(name, id_number, customer_id, customer_dob, cust_gender, cust_location)
+    def create_extended_client(self, name, transaction_id, customer_id, customer_dob, cust_gender, cust_location):
+        client = ExtendedClient(name, transaction_id, customer_id, customer_dob, cust_gender, cust_location)
         self.clients.append(client)
         return client
 
@@ -98,7 +99,6 @@ class Bank:
 # Приклад використання - має бути замінений вашою імплементацією згідно завдання
 bank = Bank()
 # client = bank.create_client("Іван Петренко", "1234567890")
-
 client = bank.create_extended_client("Іван Петренко", "1234567890", "CUST001", "1985-06-15", "Чоловік", "Київ")
 account = bank.create_account(client, 1000)
 

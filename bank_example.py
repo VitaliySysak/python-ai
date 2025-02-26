@@ -109,4 +109,4 @@ withdrawal_transaction = WithdrawalTransaction(200)
 bank.execute_transaction(account, withdrawal_transaction)
 
 print(client)
-print(account)
+print(bank.clients[0].accounts[0].balance)

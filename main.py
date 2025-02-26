@@ -1,32 +1,31 @@
 from faker import Faker
 import pandas as pd
-from bank_example import Client, ExtendedClient, Account, DepositAccount, Transaction, DepositTransaction, WithdrawalTransaction, Bank
+from bank_example import DepositTransaction, WithdrawalTransaction, Bank
+from bank_info import BankInfo
 
 df = pd.read_csv("./datasets/bank_transactions.csv")
 
 df.info()
 
 particular_df = df.head(100)
+df = particular_df.dropna()
 
-particular_df.to_csv("./datasets/first_1000_records.csv", index=False)
+df.to_csv("./datasets/first_1000_records.csv", index=False)
 
-# Приклад використання - має бути замінений вашою імплементацією згідно завдання
 bank = Bank()
 
-# client = bank.create_client("Іван Петренко", "1234567890")
-
-for index, row in particular_df.iterrows():
+for index, row in df.iterrows():
     fake = Faker()
-
     name = fake.name()
     transaction_id = row["TransactionID"]
     customer_id = row["CustomerID"]
     customer_dob = row["CustomerDOB"]
     gender = row["CustGender"]
     city = row["CustLocation"]
+    total_balance = row["CustAccountBalance"]
 
     client = bank.create_extended_client(name=name, transaction_id=transaction_id, customer_id=customer_id, customer_dob=customer_dob, cust_gender=gender, cust_location=city)
-    account = bank.create_account(client, 1000)
+    account = bank.create_account(client, total_balance)
 
     if client.cust_gender == "M":
         deposit_transaction = DepositTransaction(500)
@@ -36,5 +35,8 @@ for index, row in particular_df.iterrows():
         bank.execute_transaction(account, withdrawal_transaction)
     else:
         pass
-        
-print(bank.clients)
+
+bank_info = BankInfo(bank, df)
+print(bank_info.calculate_initial_balance())
+print(bank_info.calculate_final_balance())
+bank_info.compare_balances()
